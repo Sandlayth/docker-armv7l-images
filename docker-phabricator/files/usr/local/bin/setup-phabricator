@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+pushd /srv/phabricator/phabricator
+
+# MYSQL
+/srv/phabricator/phabricator/bin/config set mysql.host mysql
+/srv/phabricator/phabricator/bin/config set mysql.pass $MYSQL_ENV_MYSQL_ROOT_PASSWORD
+if [ -n "$PHABRICATOR_STORAGE_NAMESPACE" ]; then
+	/srv/phabricator/phabricator/bin/config set storage.default-namespace $PHABRICATOR_STORAGE_NAMESPACE
+fi
+
+# URLs
+/srv/phabricator/phabricator/bin/config set phabricator.base-uri $PHABRICATOR_URL
+if [ -n "$PHABRICATOR_ALT_FILE_DOMAIN" ]; then
+	/srv/phabricator/phabricator/bin/config set security.alternate-file-domain "$PHABRICATOR_ALT_FILE_DOMAIN"
+fi
+
+# Mail
+if [ -n "$PHABRICATOR_USE_MAILGUN" ]; then
+	/srv/phabricator/phabricator/bin/config set metamta.mail-adapter PhabricatorMailImplementationMailgunAdapter
+	if [ -n "$PHABRICATOR_DOMAIN" ]; then
+		/srv/phabricator/phabricator/bin/config set mailgun.domain $PHABRICATOR_DOMAIN
+	fi
+	if [ -n "$PHABRICATOR_MAILGUN_APIKEY" ]; then
+		/srv/phabricator/phabricator/bin/config set mailgun.api-key $PHABRICATOR_MAILGUN_APIKEY
+	fi
+fi
+if [ -n "$PHABRICATOR_USE_SENDGRID" ]; then
+	/srv/phabricator/phabricator/bin/config set metamta.mail-adapter PhabricatorMailImplementationSendGridAdapter
+	if [ -n "$PHABRICATOR_SENDGRID_APIUSER" ]; then
+		/srv/phabricator/phabricator/bin/config set sendgrid.api-user $PHABRICATOR_SENDGRID_APIUSER
+	fi
+	if [ -n "$PHABRICATOR_SENDGRID_APIKEY" ]; then
+		/srv/phabricator/phabricator/bin/config set sendgrid.api-key $PHABRICATOR_SENDGRID_APIKEY
+	fi
+fi
+
+# Installation
+if [ -z "$PHABRICATOR_NO_INSTALL" ]; then
+	/srv/phabricator/phabricator/bin/storage upgrade --force
+	/srv/phabricator/phabricator/bin/config set storage.mysql-engine.max-size 8388608
+	/srv/phabricator/phabricator/bin/config set pygments.enabled true
+fi
+
+# We're done
+touch .initialized
