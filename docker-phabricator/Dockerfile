@@ -26,8 +26,6 @@ RUN apk update && apk add --no-cache \
 	    bash \
 	    ncurses
 
-# RUN  sed -i "$ s|\-n||g" /usr/bin/pecl && pecl install channel://pecl.php.net/APCu-4.0.10
-
 RUN mkdir /srv/phabricator/
 
 WORKDIR /srv/phabricator
@@ -39,9 +37,10 @@ RUN git clone https://github.com/phacility/libphutil.git && \
 
 COPY files /
 
-#
-# Docker properties
-#
+RUN echo 'always_populate_raw_post_data = -1' >> /etc/php5/php.ini && \
+    echo 'post_max_size = 32M' >> /etc/php5/php.ini && \
+    echo 'opcache.validate_timestamps = 0' >> /etc/php5/php.ini 
+
 
 VOLUME ["/opt/phabricator/conf/local", "/var/repo"]
 

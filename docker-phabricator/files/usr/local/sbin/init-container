@@ -6,4 +6,5 @@ if [ ! -f .initialized ]; then
 	/usr/local/bin/setup-phabricator
 fi
 
-/run.sh
+/srv/phabricator/phabricator/bin/phd start && echo "Phabricator daemons launched"
+/run.sh && echo "Nginx/PHP server launched"
