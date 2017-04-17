@@ -1,10 +1,8 @@
 docker-golang
-docker-nginx-php-fpm
 docker-nodejs
 docker-mysql
-docker-taskserver
+docker-taskwarrior
 docker-phabricator
-docker-owncloud
 docker-hastebin
 docker-mumble
 docker-goploader
