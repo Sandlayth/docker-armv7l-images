@@ -6,7 +6,7 @@ IMAGESFILE='images'
 
 for i in $(cat "${IMAGESFILE}"); do
 	pushd "../$i"
-	docker build --no-cache -t $(echo "$i" | sed 's$docker-$sandlayth/armv7l-$g') .
+	docker build --no-cache -t $(echo "$i" | sed 's$docker-$sandlayth/armv7l-$g') . 2> /var/log/dockerbuild/"$i".err
 	echo "$i successfully built."
 	
 	if [ "$?" -eq 0 ]; then
