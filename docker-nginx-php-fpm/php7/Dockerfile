@@ -5,6 +5,7 @@ RUN echo "http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repos
 
 RUN apk update \
     && apk add --no-cache nginx ca-certificates \
+    libwebp \
     php7 \
     php7-dev \
     php7-xml \
